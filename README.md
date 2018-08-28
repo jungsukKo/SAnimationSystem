@@ -28,7 +28,9 @@ public class SAnimationTest : MonoBehaviour {
 
     public void Update()
     {
-        // assume that system has 2 layers ( 0 for looping, 1 for action ) and 3 animation states( "idle", "walk", "roll" )
+        // assume that system has 2 layers and 3 animation states("idle","walk","roll")
+        // layer 0 is for base motion like idle and walk
+        // layer 1 is for one time action to override base animation
 
         if (Input.GetKeyDown(KeyCode.Q))    // pause
             system[0].SetSpeed(0);
@@ -39,10 +41,10 @@ public class SAnimationTest : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.E))    // set layer 1 as additive, default is overriding
             system.SetAddive(1, true);
 
-        if (Input.GetKeyDown(KeyCode.R))    // play loop from Idle to walk
+        if (Input.GetKeyDown(KeyCode.R))    // change loop to walk from Idle 
             system.CrossFade("walk", 0.2f);
 
-        if (Input.GetKeyDown(KeyCode.T))    // play action layer
+        if (Input.GetKeyDown(KeyCode.T))    // play action layer(1) to override base layer(0)
             system.Play("roll", 1);     
 
         if (Input.GetKeyDown(KeyCode.Y))    // play action layer with blend-in
