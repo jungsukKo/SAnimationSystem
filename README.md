@@ -64,7 +64,8 @@ public class SAnimationTest : MonoBehaviour {
 # Background concept
 Animator is composed of a system called Playable and you can directly control this by making PlayableBehavior and Built-in Playable nodes. This system simply gives you methods to control animator like animation component. The system has 1 mixer to control animation between layers. Each layer has a mixer to crossfade A to B
 * More info https://docs.unity3d.com/Manual/Playables.html  
-![Alt text](https://https://github.com/jungsukKo/SAnimationSystem/blob/master/screenshot2.png)
+
+![](https://github.com/jungsukKo/SAnimationSystem/blob/master/screenshot2.png)
 
 # Additional
 Use this library to see the structure and flow of the Playable in the animator
