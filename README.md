@@ -5,10 +5,7 @@ Simple Animation system to control Animator without AnimatorController
 Unity change legacy animation component to animator component long time ago. To use animator, animatorController are necessary but there are few difficulties to use it. However, animator is much faster and no bug like animation componenet
 * animatorController need lot of time to setup
 * animatorController make another asset file
-* animatorController no method to control from code
-
-# Background concept
-Animator is composed of a system called Playable and you can directly controll this by making PlayableBehavior and Built-in Playerable nodes. This system is simply give you methode to control animator like animation component.
+* animatorController has no method to control animation from code
 
 # Functions
 * Basic functions ( play, stop, pause, resume, crossfade )
@@ -21,7 +18,7 @@ Animator is composed of a system called Playable and you can directly controll t
 2. assign Avatar to Animator ( don't assign Animator Controller )
 3. have fun!
 
-# Test Monobehaviour
+# Test
 ```
 public class SAnimationTest : MonoBehaviour {
 
@@ -63,6 +60,9 @@ public class SAnimationTest : MonoBehaviour {
 }
 ```
 
+# Background concept
+Animator is composed of a system called Playable and you can directly control this by making PlayableBehavior and Built-in Playable nodes. This system simply gives you methods to control animator like animation component. The system has 1 mixer to control animation between layers. Each layer has a mixer to crossfade A from B
+* More info https://docs.unity3d.com/Manual/Playables.html
 
 # Additional
 Use this library to see the structure and flow of the Playable in the animator
