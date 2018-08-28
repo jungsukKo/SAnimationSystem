@@ -1,7 +1,7 @@
 # SAnimationSystem
 Simple Animation system to control Animator without AnimatorController
 
-# Why I make this?
+# Why?
 Unity change legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and there are few difficulties. 
 * animatorController need lot of time to setup
 * animatorController make another asset file
@@ -13,7 +13,7 @@ Unity change legacy animation component to animator component long time ago. Ani
 * Override / Additive layer
 * easy to expand and read codes
 
-# how-to-use
+# How-to-use
 1. add SAnimationSystem component to animation GameObject
 2. assign Avatar to Animator ( don't assign Animator Controller )
 3. have fun!
