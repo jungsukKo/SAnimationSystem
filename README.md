@@ -32,6 +32,9 @@ public class SAnimationTest : MonoBehaviour {
         // layer 0 is for base motion like idle and walk
         // layer 1 is for one time action to override base animation
 
+        // test asset is from assetstore ( RPG Character Mecanim Animation Pack FREE )
+        // https://assetstore.unity.com/packages/3d/animations/rpg-character-mecanim-animation-pack-free-65284
+
         if (Input.GetKeyDown(KeyCode.Q))    // pause
             system[0].SetSpeed(0);
 
@@ -50,10 +53,10 @@ public class SAnimationTest : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Y))    // play action layer with blend-in
             system.Play("roll", 1, 0.2f);
 
-        if (Input.GetKeyDown(KeyCode.U))    // play action layer with blend-in and blend-out
+        if (Input.GetKeyDown(KeyCode.U))    // play action layer with blend-in&out
             system.Play("roll", 1, 0.2f, 0.2f);
 
-        if (Input.GetKeyDown(KeyCode.I))    // play action layer with blend-in and blend-out and override wraping mode
+        if (Input.GetKeyDown(KeyCode.I))    // play action layer with blend-in&out and override wraping mode
             system.Play("roll", 1, 0.2f, 0.2f, SAnimation.eWRAP_MODE.FREEZE_AT_LAST);
     }
 }
