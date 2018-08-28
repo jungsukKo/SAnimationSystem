@@ -2,7 +2,7 @@
 Simple Animation system to control Animator without AnimatorController
 
 # Why I make this?
-Unity change legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController are essential and there are few difficulties. 
+Unity change legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and there are few difficulties. 
 * animatorController need lot of time to setup
 * animatorController make another asset file
 * animatorController has no method to control animation from code
