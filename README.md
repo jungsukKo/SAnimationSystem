@@ -17,6 +17,7 @@ Unity change legacy animation component to animator component long time ago. Ani
 1. add SAnimationSystem component to animation GameObject
 2. assign Avatar to Animator ( don't assign Animator Controller )
 3. have fun!
+4.
 ![](https://github.com/jungsukKo/SAnimationSystem/blob/master/screenshot1.png)
 
 # Test
