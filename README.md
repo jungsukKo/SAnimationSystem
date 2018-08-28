@@ -5,13 +5,13 @@ Simple Animation system to control Animator without AnimatorController
 Unity changed legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and it has few difficulties. 
 * animatorController need lot of time to setup
 * animatorController make another asset file
-* animatorController has no method to control animation from code
+* animatorController has no method to control animation from code at runtime
 
 # Functions
 * Basic functions ( play, stop, pause, resume, crossfade )
 * Blend-in & Blend-out
 * Override / Additive layer
-* easy to expand and read codes
+* Very simple code - easy to expand and read
 
 # How-to-use
 1. add SAnimationSystem component to animation GameObject
