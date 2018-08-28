@@ -14,7 +14,7 @@ Animator is composed of a system called Playable and you can directly controll t
 * Basic functions ( play, stop, pause, resume, crossfade )
 * Blend-in & Blend-out
 * Support Override / Additive layer
-* easy to expend and read
+* easy to expend and read codes
 
 # Set-up
 1. add SAnimationSystem component
