@@ -65,5 +65,5 @@ public class SAnimationTest : MonoBehaviour {
 
 
 # Additional
-Use this library o see the structure and flow of the Playable in the animator
+Use this library to see the structure and flow of the Playable in the animator
 * https://github.com/Unity-Technologies/graph-visualizer
