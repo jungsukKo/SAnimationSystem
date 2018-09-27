@@ -1,11 +1,7 @@
 Need 2018.02 or Newer version of Unity  
 
 # Why?
-Unity changed legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and it has few difficulties. 
-* animatorController need lot of time to setup
-* animatorController make another asset file
-* animatorController hard to control animation from code at runtime  
-This simple code is starting point of user custom animation system, easy to expand.
+Unity changed legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and it has few difficulties. This simple code is starting point of user custom animation system, easy to expand.  
 
 # Functions
 * Basic functions ( play, stop, pause, resume, crossfade )
