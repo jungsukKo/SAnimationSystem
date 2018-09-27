@@ -6,42 +6,18 @@ using UnityEngine.Animations;
 
 public class SAnimation
 {
-    public enum eWRAP_MODE
-    {
-        AUTO, // follow clip setting
-        LOOP,
-        ONCE,
-        FREEZE_AT_LAST
-    }
-
-    public PlayableGraph graph;
-
-    private float m_BlendInTime;
-    private float m_BlendOutTime;
-    private float m_BlendOutStartTime;
-    private AnimationClip m_Clip;
-    private AnimationClipPlayable m_Playable;
-    public eWRAP_MODE m_WrapMode;
+    public SPlayDesc PlayInfo { get; private set; }
     public float Weight { get; private set; }
+    public bool IsValid { get { return PlayInfo.IsValid; } }
 
+    private AnimationClipPlayable m_Playable;
 
-    public bool IsValid { get { return m_Clip != null; } }
-    public AnimationClip Clip { get { return m_Clip; } }
-
-    public void Play(AnimationClipPlayable playable, float _blendinTime, float _blendoutTime, eWRAP_MODE t)
+    public void Play(AnimationClipPlayable playable, SPlayDesc info)
     {
-        m_Clip = playable.GetAnimationClip();
+        PlayInfo = info;
         m_Playable = playable;
-        m_BlendInTime = _blendinTime;
-        m_BlendOutTime = _blendoutTime;
-        m_BlendOutStartTime = Math.Max(0, m_Clip.length - m_BlendOutTime);
 
-        if (t == eWRAP_MODE.AUTO)
-            m_WrapMode = Clip.isLooping ? SAnimation.eWRAP_MODE.LOOP : SAnimation.eWRAP_MODE.ONCE;
-        else
-            m_WrapMode = t;
-
-        if (m_BlendInTime == 0)
+        if (PlayInfo.blendinTime == 0)
             Weight = 1;
         else
             Weight = 0;
@@ -52,32 +28,34 @@ public class SAnimation
         if (IsValid == false)
             return;
 
-        graph.DestroyPlayable(m_Playable);
-        m_BlendInTime = 0;
-        m_BlendOutTime = 0;
-        m_BlendOutStartTime = 0;
-        m_Clip = null;
+        if(m_Playable.IsValid())
+        {
+            m_Playable.GetGraph().DestroyPlayable(m_Playable);
+            m_Playable = new AnimationClipPlayable { };
+        }
+
+        PlayInfo = new SPlayDesc { };
         Weight = 0;
     }
 
     public void Update()
     {
-        if (m_Clip == null)
+        if (PlayInfo.clip == null)
             return;
 
         UpdateBlendIn();
 
-        switch (m_WrapMode)
+        switch (PlayInfo.WrapMode)
         {
-            case eWRAP_MODE.ONCE:
-                if (m_Playable.GetTime() >= m_Clip.length)
+            case SPlayDesc.eWRAP_MODE.ONCE:
+                if (m_Playable.GetTime() >= PlayInfo.length)
                     Clear();
                 else
                     UpdateBlendOut();
                 break;
 
-            case eWRAP_MODE.FREEZE_AT_LAST:
-                if (m_Playable.GetTime() >= m_Clip.length)
+            case SPlayDesc.eWRAP_MODE.FREEZE_AT_LAST:
+                if (m_Playable.GetTime() >= PlayInfo.length)
                     m_Playable.Pause();
                 break;
         }
@@ -85,27 +63,27 @@ public class SAnimation
 
     private void UpdateBlendIn()
     {
-        if (m_BlendInTime == 0 || Weight == 1)
+        if (PlayInfo.blendinTime == 0 || Weight == 1)
             return;
 
         float currentTime = (float)m_Playable.GetTime();
-        if (currentTime < m_BlendInTime)
-            Weight = currentTime / m_BlendInTime;
+        if (currentTime < PlayInfo.blendinTime)
+            Weight = currentTime / PlayInfo.blendinTime;
         else
             Weight = 1;
     }
 
     private void UpdateBlendOut()
     {
-        if (m_BlendOutTime == 0)
+        if (PlayInfo.blendoutTime == 0)
             return;
 
         float currentTime = (float)m_Playable.GetTime();
-        float passedTimeFromBlendOut = currentTime - m_BlendOutStartTime;
+        float passedTimeFromBlendOut = currentTime - PlayInfo.blendOutStartTime;
         if (passedTimeFromBlendOut < 0)
             return;
 
-        Weight = 1 - passedTimeFromBlendOut / m_BlendOutTime;
+        Weight = 1 - passedTimeFromBlendOut / PlayInfo.blendoutTime;
     }
 
     public float GetTime()

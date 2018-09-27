@@ -11,14 +11,12 @@ public class SAnimationEditor : Editor
         public static GUIContent animations = new GUIContent("Animations", "Animation list");
         public static GUIContent cullingMode = new GUIContent("Culling Mode", "Controls what is updated when the object has been culled");
         public static GUIContent animatorUpdateMode = new GUIContent("Update Mode", "The update mode of the Animator");
-        public static GUIContent layerCount = new GUIContent("Layer Count", "The number of layers");
         public static GUIContent startAnimationIndex = new GUIContent("Start Animation", "Start animation index among list");
     }
 
     SerializedProperty states;
     SerializedProperty cullingMode;
     SerializedProperty animatorUpdateMode;
-    SerializedProperty layerCount;
     SerializedProperty startAnimationIndex;
 
     void OnEnable()
@@ -26,7 +24,6 @@ public class SAnimationEditor : Editor
         states = serializedObject.FindProperty("m_States");
         cullingMode = serializedObject.FindProperty("m_CullingMode");
         animatorUpdateMode = serializedObject.FindProperty("m_AnimatorUpdateMode");
-        layerCount = serializedObject.FindProperty("m_LayerCount");
         startAnimationIndex = serializedObject.FindProperty("m_StartAnimationIndex");
     }
     
@@ -37,7 +34,6 @@ public class SAnimationEditor : Editor
         EditorGUILayout.PropertyField(startAnimationIndex, Styles.startAnimationIndex);
         EditorGUILayout.PropertyField(cullingMode, Styles.cullingMode);
         EditorGUILayout.PropertyField(animatorUpdateMode, Styles.animatorUpdateMode);
-        EditorGUILayout.PropertyField(layerCount, Styles.layerCount);
         serializedObject.ApplyModifiedProperties();
     }
 }

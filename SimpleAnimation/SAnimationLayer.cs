@@ -4,25 +4,26 @@ using UnityEngine.Playables;
 using UnityEngine.Animations;
 
 
-
 public class SAnimationLayer
 {
-    private PlayableGraph m_Graph;
-    private AnimationLayerMixerPlayable m_CrossFadeMixer;
     private SAnimation m_A;
     private SAnimation m_B;
+    private SMixer m_MixerManager;
+
 
     public float Weight { get { return Math.Max(m_A.Weight, m_B.Weight); } }
     public bool IsPlaying { get { return m_A.IsValid || m_B.IsValid; } }
 
-    public SAnimationLayer(PlayableGraph _graph, AnimationLayerMixerPlayable layerMixer, int layerIndex)
-    {
-        m_Graph = _graph;
-        m_CrossFadeMixer = AnimationLayerMixerPlayable.Create(m_Graph, 2);
-        m_Graph.Connect(m_CrossFadeMixer, 0, layerMixer, layerIndex);
 
-        m_A = new SAnimation() { graph = _graph };
-        m_B = new SAnimation() { graph = _graph };
+
+    public SAnimationLayer(Animator animator, Playable output, int layerIndex)
+    {
+        PlayableGraph graph = output.GetGraph();
+        m_MixerManager = new SMixer(animator, graph);
+        graph.Connect(m_MixerManager.m_Mixer, 0, output, layerIndex);
+
+        m_A = new SAnimation();
+        m_B = new SAnimation();
     }
 
     public void Stop()
@@ -31,63 +32,60 @@ public class SAnimationLayer
         m_B.Clear();
     }
 
-    private void Create(SAnimation targetSoket, AnimationClip clip, float _blendinTime, float _blendoutTime, SAnimation.eWRAP_MODE t)
+    private void Create(SAnimation targetSoket, SPlayDesc info)
     {
         if (targetSoket.IsValid)
             targetSoket.Clear();
 
-        AnimationClipPlayable p = AnimationClipPlayable.Create(m_Graph, clip);
+        AnimationClipPlayable p = AnimationClipPlayable.Create(m_MixerManager.m_Mixer.GetGraph(), info.clip);
         if(targetSoket == m_A)
-            m_Graph.Connect(p, 0, m_CrossFadeMixer, 0);
+            m_MixerManager.Connect(p, 0);
         else
-            m_Graph.Connect(p, 0, m_CrossFadeMixer, 1);
-        targetSoket.Play(p, _blendinTime, _blendoutTime, t);
+            m_MixerManager.Connect(p, 1);
+
+        targetSoket.Play(p, info);
     }
 
-    public void Play(AnimationClip clip, float _blendinTime, float _blendoutTime, SAnimation.eWRAP_MODE t)
+    public void Play(SPlayDesc info)
     {
-        Stop();
-        Create(m_A, clip, _blendinTime, _blendoutTime, t);
-    }
-
-    public void CrossFade(AnimationClip clip, float _blendinTime, float _blendoutTime, SAnimation.eWRAP_MODE t)
-    {
-        if( m_A.IsValid )
-            Create(m_B, clip, _blendinTime, _blendoutTime, t);
+        if (m_A.IsValid && info.blendinTime > 0)
+        { 
+            // crossfade current animation
+            Create(m_B, info); 
+        }
         else
-            Create(m_A, clip, _blendinTime, _blendoutTime, t); // noting to crossfade
+        {
+            m_B.Clear();
+            Create(m_A, info);
+        }
     }
 
     public void Update()
     {
         m_A.Update();
-        m_CrossFadeMixer.SetInputWeight(0, m_A.Weight);
 
-        if( m_B.IsValid )
+        if (m_B.IsValid)
         {
             m_B.Update();
-            m_CrossFadeMixer.SetInputWeight(1, m_B.Weight);
-
-            if (m_B.Weight == 1 )
+            if (m_B.Weight == 1)
             {
-                if( m_A.IsValid )
+                if (m_A.IsValid)
                     m_A.Clear();
-                CrossFadeComplete();
+                OverrideBtoA();
             }
         }
-    }
 
-    private void CrossFadeComplete()
+        m_MixerManager.SetWeight(m_A.Weight, m_B.Weight);
+    }
+    
+    private void OverrideBtoA()
     {
         // swap A and B
         SAnimation temp = m_A;
         m_A = m_B;
         m_B = temp;
 
-        // reconnect to input 0
-        Playable output1 = m_CrossFadeMixer.GetInput(1);
-        m_CrossFadeMixer.DisconnectInput(1);
-        m_Graph.Connect(output1, 0, m_CrossFadeMixer, 0);
+        m_MixerManager.OverrideInputBtoA();
     }
 
     public SAnimation GetAnimation()
@@ -95,5 +93,10 @@ public class SAnimationLayer
         if (m_B.IsValid)
             return m_B;
         return m_A;
+    }
+
+    public void Dispose()
+    {
+        m_MixerManager.Dispose();
     }
 }
