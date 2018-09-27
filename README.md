@@ -1,12 +1,10 @@
-# SAnimationSystem
-Simple Animation system to control Animator without AnimatorController
-Need 2018.02 or Newer version of Unity
+Need 2018.02 or Newer version of Unity  
 
 # Why?
 Unity changed legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and it has few difficulties. 
 * animatorController need lot of time to setup
 * animatorController make another asset file
-* animatorController hard to control animation from code at runtime
+* animatorController hard to control animation from code at runtime  
 This simple code is starting point of user custom animation system, easy to expand.
 
 # Functions
@@ -33,6 +31,7 @@ Use this library to see the structure and flow of the Playable in the animator
 public class SAnimationTest : MonoBehaviour {
 
     public SAnimationSystem system;
+    public Transform blendingMaskBone;
 
     public void Update()
     {
@@ -49,8 +48,8 @@ public class SAnimationTest : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.W))    // resume
             system[0].SetSpeed(1);
 
-        if (Input.GetKeyDown(KeyCode.E))    // set layer 1 as additive, default is overriding
-            system.SetAddive(1, true);
+        if (Input.GetKeyDown(KeyCode.E))    // Blend action layer only upper part of body
+            system.SetBlendingMask(blendingMaskBone, 1);
 
         if (Input.GetKeyDown(KeyCode.R))    // change loop to walk from Idle 
             system.CrossFade("walk", 0.2f);
