@@ -2,22 +2,32 @@
 Simple Animation system to control Animator without AnimatorController
 
 # Why?
-Unity change legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and there are few difficulties. 
+Unity changed legacy animation component to animator component long time ago. Animator is much faster with no bug. However, AnimatorController is essential and it has few difficulties. 
 * animatorController need lot of time to setup
 * animatorController make another asset file
-* animatorController has no method to control animation from code
+* animatorController has no method to control animation from code at runtime
 
 # Functions
 * Basic functions ( play, stop, pause, resume, crossfade )
 * Blend-in & Blend-out
 * Override / Additive layer
-* easy to expand and read codes
+* Very simple code - easy to expand and read
 
 # How-to-use
 1. add SAnimationSystem component to animation GameObject
 2. assign Avatar to Animator ( don't assign Animator Controller )
 3. have fun!  
 ![](https://github.com/jungsukKo/SAnimationSystem/blob/master/screenshot1.png)
+
+# Background concept
+Animator is composed of a system called Playable and you can directly control this by making PlayableBehavior and Built-in Playable nodes. This system simply gives you methods to control animator like animation component. The system has 1 mixer to control animation between layers. Each layer has a mixer to crossfade A to B
+* More info https://docs.unity3d.com/Manual/Playables.html  
+
+![](https://github.com/jungsukKo/SAnimationSystem/blob/master/screenshot2.png)
+
+# Additional
+Use this library to see the structure and flow of the Playable in the animator
+* https://github.com/Unity-Technologies/graph-visualizer
 
 # Test
 ```
@@ -60,11 +70,3 @@ public class SAnimationTest : MonoBehaviour {
     }
 }
 ```
-
-# Background concept
-Animator is composed of a system called Playable and you can directly control this by making PlayableBehavior and Built-in Playable nodes. This system simply gives you methods to control animator like animation component. The system has 1 mixer to control animation between layers. Each layer has a mixer to crossfade A to B
-* More info https://docs.unity3d.com/Manual/Playables.html
-
-# Additional
-Use this library to see the structure and flow of the Playable in the animator
-* https://github.com/Unity-Technologies/graph-visualizer
