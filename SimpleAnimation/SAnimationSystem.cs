@@ -181,7 +181,7 @@ public class SAnimationSystem : MonoBehaviour
         m_Layer[layer].Play(info);
     }
 
-    public void PlayBlendOut(string state, uint layer = 0, float _blendinTime = 0, float _blendoutTime = 0, bool _blendOutAfterEnd = false)
+    public void PlayBlendOut(string state, uint layer = 0, float _blendinTime = 0, float _blendoutTime = 0, bool _blendOutAfterEnd = true)
     {
         AnimationClip _clip = GetClip(state);
         if (_clip == null)
