@@ -12,6 +12,8 @@ public class SAnimation
 
     private AnimationClipPlayable m_Playable;
 
+
+
     public void Play(AnimationClipPlayable playable, SPlayDesc info)
     {
         PlayInfo = info;
@@ -45,19 +47,21 @@ public class SAnimation
 
         UpdateBlendIn();
 
-        switch (PlayInfo.WrapMode)
+        if (PlayInfo.WrapMode == SPlayDesc.eWRAP_MODE.ONCE)
         {
-            case SPlayDesc.eWRAP_MODE.ONCE:
-                if (m_Playable.GetTime() >= PlayInfo.length)
-                    Clear();
-                else
-                    UpdateBlendOut();
-                break;
+            float currentTime = (float)m_Playable.GetTime();
+            if (currentTime >= PlayInfo.lifeTime)
+            {
+                Clear();
+                return;
+            }
 
-            case SPlayDesc.eWRAP_MODE.FREEZE_AT_LAST:
-                if (m_Playable.GetTime() >= PlayInfo.length)
-                    m_Playable.Pause();
-                break;
+            if (PlayInfo.blendoutTime != 0)
+            {
+                float dt = currentTime - PlayInfo.blendOutStartTime;
+                if (dt > 0)
+                    Weight = 1 - dt / PlayInfo.blendoutTime;
+            }
         }
     }
 
@@ -72,20 +76,7 @@ public class SAnimation
         else
             Weight = 1;
     }
-
-    private void UpdateBlendOut()
-    {
-        if (PlayInfo.blendoutTime == 0)
-            return;
-
-        float currentTime = (float)m_Playable.GetTime();
-        float passedTimeFromBlendOut = currentTime - PlayInfo.blendOutStartTime;
-        if (passedTimeFromBlendOut < 0)
-            return;
-
-        Weight = 1 - passedTimeFromBlendOut / PlayInfo.blendoutTime;
-    }
-
+    
     public float GetTime()
     {
         return (float)m_Playable.GetTime();

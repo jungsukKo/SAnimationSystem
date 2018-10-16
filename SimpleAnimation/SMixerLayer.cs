@@ -13,7 +13,6 @@ public class SLayerMixer : SMixer
     public NativeArray<float> m_BoneWeights;
     public Transform[] m_BoneList;
 
-
     public SLayerMixer(Animator animator, PlayableGraph graph)
         : base()
     {
@@ -40,11 +39,11 @@ public class SLayerMixer : SMixer
             m_BoneWeights.Dispose();
     }
     
-    public override void SetWeight(float weight0, float wieght1)
+    public override void SetWeight(float w0, float w1)
     {
         var job = m_Mixer.GetJobData<SMixerLayerJob>();
-        job.weightA = weight0;
-        job.weightB = wieght1;
+        job.weightA = w0;
+        job.weightB = w1;
         m_Mixer.SetJobData(job);
     }
 

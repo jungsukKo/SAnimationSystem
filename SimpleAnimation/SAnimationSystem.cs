@@ -13,10 +13,10 @@ public struct SPlayDesc
 {
     public enum eWRAP_MODE
     {
-        AUTO, // follow clip setting
+        AUTO,   // follow clip setting
         LOOP,
         ONCE,
-        FREEZE_AT_LAST
+        FREEZE_AT_LAST  // don't kill animation
     }
 
 
@@ -24,20 +24,51 @@ public struct SPlayDesc
     public float blendoutTime;
     public eWRAP_MODE WrapMode;
     public AnimationClip clip;
+    public bool blendOutAfterEnd;
     
     public bool IsValid { get { return clip != null; } }
     public float length { get { return clip.length; } }
-    public float blendOutStartTime { get {  return Math.Max(0, length - blendoutTime); } }
+    public float lifeTime
+    {
+        get
+        {
+            if (blendOutAfterEnd)
+                return length + blendoutTime;
+            else
+                return length;
+        }
+    }
 
-    public SPlayDesc(AnimationClip _clip, float _blendinTime = 0, float _blendoutTime = 0, SPlayDesc.eWRAP_MODE wrap = SPlayDesc.eWRAP_MODE.AUTO)
+    public float blendOutStartTime
+    {
+        get {
+            if (blendOutAfterEnd)
+                return length;
+            else
+                return Math.Max(0, length - blendoutTime);
+        }
+    }
+
+    public SPlayDesc(AnimationClip _clip, float _blendinTime, SPlayDesc.eWRAP_MODE wrap)
     {
         blendinTime = _blendinTime;
-        blendoutTime = _blendoutTime;
+        blendoutTime = 0;
+        blendOutAfterEnd = false;
         clip = _clip;
         
         WrapMode = wrap;
         if (wrap == SPlayDesc.eWRAP_MODE.AUTO)
             WrapMode = _clip.isLooping ? SPlayDesc.eWRAP_MODE.LOOP : SPlayDesc.eWRAP_MODE.ONCE;
+    }
+
+    public SPlayDesc(AnimationClip _clip, float _blendinTime, float _blendoutTime, bool _blendOutAfterEnd)
+    {
+        blendinTime = _blendinTime;
+        blendoutTime = _blendoutTime;
+        blendOutAfterEnd = _blendOutAfterEnd;
+        clip = _clip;
+
+        WrapMode = eWRAP_MODE.ONCE;
     }
 }
 
@@ -140,16 +171,26 @@ public class SAnimationSystem : MonoBehaviour
         return null;
     }
 
-    public void Play(string state, uint layer = 0, float _blendinTime = 0, float _blendoutTime = 0, SPlayDesc.eWRAP_MODE wrap = SPlayDesc.eWRAP_MODE.AUTO)
+    public void Play(string state, uint layer = 0, float _blendinTime = 0, SPlayDesc.eWRAP_MODE wrap = SPlayDesc.eWRAP_MODE.AUTO)
     {
         AnimationClip _clip = GetClip(state);
         if (_clip == null)
             return;
 
-        SPlayDesc info = new SPlayDesc(_clip, _blendinTime, _blendoutTime, wrap);
+        SPlayDesc info = new SPlayDesc(_clip, _blendinTime, wrap);
         m_Layer[layer].Play(info);
     }
 
+    public void PlayBlendOut(string state, uint layer = 0, float _blendinTime = 0, float _blendoutTime = 0, bool _blendOutAfterEnd = false)
+    {
+        AnimationClip _clip = GetClip(state);
+        if (_clip == null)
+            return;
+
+        SPlayDesc info = new SPlayDesc(_clip, _blendinTime, _blendoutTime, _blendOutAfterEnd);
+        m_Layer[layer].Play(info);
+    }
+    
     public void SetBlendingMask(Transform boneMask, float weight)
     {
         m_LayerManager.SetBlendingMask(boneMask, weight);
