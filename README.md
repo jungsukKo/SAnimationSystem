@@ -57,10 +57,7 @@ public class SAnimationTest : MonoBehaviour {
             system.Play("roll", 1, 0.2f);
 
         if (Input.GetKeyDown(KeyCode.U))    // play action layer with blend-in&out
-            system.Play("roll", 1, 0.2f, 0.2f);
-
-        if (Input.GetKeyDown(KeyCode.I))    // play action layer with blend-in&out and override wraping mode
-            system.Play("roll", 1, 0.2f, 0.2f, SAnimation.eWRAP_MODE.FREEZE_AT_LAST);
+            system.PlayBlendOut("roll", 1, 0.2f, 0.2f);
     }
 }
 ```
