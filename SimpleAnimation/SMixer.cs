@@ -23,6 +23,8 @@ public class SMixer
 
         SMixerJob _Job = new SMixerJob() { handles = m_Handles, ApplyRootMotion = animator.applyRootMotion };
         m_Mixer = AnimationScriptPlayable.Create(graph, _Job, 2);
+        m_Mixer.SetInputWeight(0, 1);
+        m_Mixer.SetInputWeight(1, 1);
         m_Mixer.SetProcessInputs(false);
     }
     

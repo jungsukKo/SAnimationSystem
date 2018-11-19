@@ -118,7 +118,7 @@ public class SAnimationSystem : MonoBehaviour
 
 
     private SAnimationLayer[] m_Layer;
-    private SLayerMixer m_LayerManager;
+    private AnimationLayerMixerPlayable m_LayerManager;
     private PlayableGraph m_Graph;
 
     private const int m_LayerCount = 2;
@@ -141,18 +141,18 @@ public class SAnimationSystem : MonoBehaviour
         m_Graph.Play();
 #endif
 #endif
-        m_LayerManager = new SLayerMixer(animator, m_Graph);
-        m_Graph.GetOutput(0).SetSourcePlayable(m_LayerManager.m_Mixer);
+        m_LayerManager = AnimationLayerMixerPlayable.Create(m_Graph, 2);
+        m_Graph.GetOutput(0).SetSourcePlayable(m_LayerManager);
 
         m_Layer = new SAnimationLayer[m_LayerCount];
         for (int i = 0; i < m_LayerCount; i++)
-            m_Layer[i] = new SAnimationLayer(animator, m_LayerManager.m_Mixer, i);
+            m_Layer[i] = new SAnimationLayer(animator, m_LayerManager, i);
     }
 
     private void Start()
     {
         if (m_States.Length > m_StartAnimationIndex)
-            Play(m_States[m_StartAnimationIndex].state);
+            Play(m_States[m_StartAnimationIndex].state, 0, 0);
     }
     
     public SAnimation this[uint layer]
@@ -171,7 +171,7 @@ public class SAnimationSystem : MonoBehaviour
         return null;
     }
 
-    public void Play(string state, uint layer = 0, float _blendinTime = 0, SPlayDesc.eWRAP_MODE wrap = SPlayDesc.eWRAP_MODE.AUTO)
+    public void Play(string state, uint layer, float _blendinTime, SPlayDesc.eWRAP_MODE wrap = SPlayDesc.eWRAP_MODE.AUTO)
     {
         AnimationClip _clip = GetClip(state);
         if (_clip == null)
@@ -181,7 +181,7 @@ public class SAnimationSystem : MonoBehaviour
         m_Layer[layer].Play(info);
     }
 
-    public void PlayBlendOut(string state, uint layer = 0, float _blendinTime = 0, float _blendoutTime = 0, bool _blendOutAfterEnd = true)
+    public void Play(string state, uint layer, float _blendinTime, float _blendoutTime, bool _blendOutAfterEnd = true)
     {
         AnimationClip _clip = GetClip(state);
         if (_clip == null)
@@ -191,16 +191,6 @@ public class SAnimationSystem : MonoBehaviour
         m_Layer[layer].Play(info);
     }
     
-    public void SetBlendingMask(Transform boneMask, float weight)
-    {
-        m_LayerManager.SetBlendingMask(boneMask, weight);
-    }
-
-    public void ClearBlendingMask()
-    {
-        m_LayerManager.ClearBlendingMask();
-    }
-
     const int STOP_ALL = 999999;
     public void Stop(uint layer = STOP_ALL)
     {
@@ -220,7 +210,11 @@ public class SAnimationSystem : MonoBehaviour
         foreach (SAnimationLayer l in m_Layer)
             l.Update();
 
-        m_LayerManager.SetWeight(m_Layer[0].Weight, m_Layer[1].Weight);
+        if (m_Layer[1].Weight == 1)
+            m_LayerManager.SetInputWeight(0, 0);
+        else
+            m_LayerManager.SetInputWeight(0, m_Layer[0].Weight);
+        m_LayerManager.SetInputWeight(1, m_Layer[1].Weight);
     }
 
     private void Dispose()
@@ -228,7 +222,6 @@ public class SAnimationSystem : MonoBehaviour
         foreach (SAnimationLayer l in m_Layer)
             l.Dispose();
 
-        m_LayerManager.Dispose();
         m_Graph.Destroy();
     }
 
